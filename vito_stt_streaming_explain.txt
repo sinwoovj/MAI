@@ -1,0 +1,73 @@
+< DecoderConfig>
+Name                    |	Type            |	Description	                                                             |   Required
+--------------------------------------------------------------------------------------------------------------------------------------
+sample_rate             |	integer         |	범위: 8000 ~ 48000, 단위: Hz                                              |   O
+encoding                |	AudioEncoding   |	인코딩 타입 (참고. 지원 인코딩)	                                           |   O
+use_itn                 |	bool            |	영어/숫자/단위 변환 사용 여부 (default: true, 참고: 영어/숫자/단위 변환)    |	X
+use_disfluency_filter   |	bool            |	간투어 필터기능 사용 여부 (default: false, 참고: 간투어 필터)               |	X
+use_profanity_filter    |	bool            |	비속어 필터기능 사용 여부 (default: false, 참고: 비속어 필터)               |	X
+
+======================================================================================================================================
+
+< StreamingRecognitionResult >
+{
+  // 스트리밍 시작 기준 문장의 발화 시점 (단위: msec)
+  start_at: integer
+  // final이 true 일 경우 문자의 발화 시간, final 이 false일 경우 0 (단위: msec)
+  duration: integer
+  // 문장의 종료 여부
+  is_final: bool
+  // 대체 텍스트, 첫번째 값이 정확도가 가장 높은 결과
+  alternatives: [
+    SpeechRecognitionAlternative {
+      // 문장의 텍스트
+      text: string
+      // 단어(토큰)의 정보, is_final 이 true 일 경우만 제공
+      words?: [
+        WordInfo {
+          // 단어(토큰)의 텍스트, `|` 로 띄어쓰기 구분
+          text: string
+          // 문장의 시작 기준 단어(토큰)의 발화 시점 (단위: msec)
+          start_at: integer
+          // 단어(토큰)의 발화 시간 (단위: msec)
+          duration: integer
+          // 단어(토큰)의 정확도 (미지원)
+          confidence: float
+        }
+      ]
+    }
+  ]
+}
+
+======================================================================================================================================
+
+< 스트리밍 STT - GRPC 의 오류 처리는 grpc error code를 이용하여 처리합니다. >
+
+Code    |	Description        |	Notes
+--------------------------------------------------------
+16      |	Unauthenticated    |    인증실패
+3       |	InvalidArgument	   |    잘못된 파라미터 요청
+1       |	Canceled           |	사용량 초과
+13      |	Internal           |	서버 오류
+
+======================================================================================================================================
+
+< 코드 설명 >
+
+해당 코드는 VITOOpenAPI를 활용하여 STT (Speech-to-Text) 기능을 구현하는 파이썬 스크립트입니다.
+
+먼저, 스크립트를 실행할 때 인자로 받는 스트리밍 파일을 읽어 디코더 설정(config) 객체를 만듭니다. 
+이 때, 설정값으로는 샘플 레이트(SAMPLE_RATE), 인코딩(ENCODING) 정보를 설정합니다.
+
+그 후, VITOOpenAPIClient 객체를 생성합니다. 이 때, 클라이언트 아이디(CLIENT_ID)와 클라이언트 시크릿(CLIENT_SECRET) 값을 초기화합니다.
+
+VITOOpenAPIClient 객체의 transcribe_streaming_grpc 함수를 호출하여, 스트리밍 파일과 디코더 설정 객체를 전달합니다. 
+함수는 다음과 같은 작업을 수행합니다.
+
+GRPC 서버의 URL(GRPC_SERVER_URL)을 사용하여 스트리밍 채널을 생성합니다.
+생성된 채널을 사용하여 OnlineDecoderStub 객체(stub)를 생성합니다.
+액세스 토큰을 사용하여 인증 자격 증명(cred)을 생성합니다.
+요청 이터레이터(req_iterator)를 생성합니다. 이터레이터는 스트리밍 설정 요청과 오디오 데이터를 전송할 때 사용됩니다.
+요청 이터레이터를 OnlineDecoderStub.Decode() 함수로 전달하여, 응답 이터레이터(resp_iter)를 반환합니다.
+반환된 응답 이터레이터에서 transcribe 된 문자열을 출력합니다.
+추가로, 코드 맨 아래에서는 argparse 모듈을 사용하여 스크립트 실행 시 입력으로 받는 인자를 처리합니다.
