@@ -31,7 +31,7 @@ CLIENT_ID = api_key.VITO_API_KEY_CLIENT_ID
 CLIENT_SECRET = api_key.VITO_API_KEY_CLIENT_SECRET
 
 SAMPLE_RATE = 8000
-ENCODING = pb.DecoderConfig.AudioEncoding.LINEAR16
+ENCODING = pb.DecoderConfig.AudioEncoding.wav
 
 
 class VITOOpenAPIClient:

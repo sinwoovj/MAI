@@ -3,9 +3,9 @@ Name                    |	Type            |	Description	                        
 --------------------------------------------------------------------------------------------------------------------------------------
 sample_rate             |	integer         |	범위: 8000 ~ 48000, 단위: Hz                                              |   O
 encoding                |	AudioEncoding   |	인코딩 타입 (참고. 지원 인코딩)	                                           |   O
-use_itn                 |	bool            |	영어/숫자/단위 변환 사용 여부 (default: true, 참고: 영어/숫자/단위 변환)    |	X
-use_disfluency_filter   |	bool            |	간투어 필터기능 사용 여부 (default: false, 참고: 간투어 필터)               |	X
-use_profanity_filter    |	bool            |	비속어 필터기능 사용 여부 (default: false, 참고: 비속어 필터)               |	X
+use_itn                 |	bool            |	영어/숫자/단위 변환 사용 여부 (default: true, 참고: 영어/숫자/단위 변환)    |	  X
+use_disfluency_filter   |	bool            |	간투어 필터기능 사용 여부 (default: false, 참고: 간투어 필터)               |	  X
+use_profanity_filter    |	bool            |	비속어 필터기능 사용 여부 (default: false, 참고: 비속어 필터)               |	  X
 
 ======================================================================================================================================
 
