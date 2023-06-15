@@ -16,6 +16,6 @@ print(stt_res)
 if(stt_res != ''):
     answer = openai_.ai_res(stt_res)
     print(answer)
-    google_cloud_tts.google_tts(answer, "./audio/output/output.mp3")
+    google_cloud_tts.google_tts(answer, "./ audio/output/output.mp3")
     playsound('./audio/output/output.mp3')
     print("오디오 출력")
